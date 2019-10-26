@@ -7,8 +7,6 @@ export class CjStaticStack extends cdk.Stack {
 
     const site = new StaticSite(this, 'Commitments')
 
-    // const bucket = new s3.Bucket(this, 'Content');
-
   }
 }
 
