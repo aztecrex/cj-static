@@ -1,5 +1,13 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`Certificate Stack Has Certificate Arn Output 1`] = `
+Object {
+  "Value": Object {
+    "Ref": "Certificate4E7ABB08",
+  },
+}
+`;
+
 exports[`Data Stack Has Content Write Access Policy Arn Output 1`] = `
 Object {
   "Export": Object {

@@ -25,10 +25,14 @@ export class DataStack extends cdk.Stack {
 
 export class CertificateStack extends cdk.Stack {
     constructor(scope: cdk.Construct, domain: string, props?: cdk.StackProps) {
-        super(scope, "Certificate-" + asName(domain), props);
-        new Certificate(this, "Certificate", {
+        super(scope, "Certificate-" + asName(domain), {...props, env: {region: 'us-east-1'}});
+        const cert = new Certificate(this, "Certificate", {
             domainName: domain,
             validationMethod:  ValidationMethod.DNS,
+        });
+
+        new CfnOutput(this, "Certificate-" + asName(domain) + "-Arn", {
+            value: cert.certificateArn,
         });
       }
 }
