@@ -8,4 +8,4 @@ import cdk = require('@aws-cdk/core');
 const app = new cdk.App();
 const sites = new StaticSites(app, "StaticSites");
 sites.addDistribution("files.cj.dev");
-sites.addDistribution("commitments.cj.dev");
+// sites.addDistribution("commitments.cj.dev");
