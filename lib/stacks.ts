@@ -11,7 +11,7 @@ export class DataStack extends cdk.Stack {
     constructor(scope: cdk.Construct, props?: cdk.StackProps) {
         super(scope, "StaticData", props);
 
-        new StaticOrigin(this, "Origin");
+        new StaticOrigin(this);
 
       }
 }
