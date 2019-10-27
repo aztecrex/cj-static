@@ -1,6 +1,6 @@
 import {StaticOrigin, WriteAccessPolicy, AccessIdReadPolicy} from './static-origin';
 import { expect as expectCDK, matchTemplate, MatchStyle, haveResource, SynthUtils } from '@aws-cdk/assert';
-import { Stack, Resource } from '@aws-cdk/core';
+import { Stack, Resource, CfnOutput } from '@aws-cdk/core';
 import { ManagedPolicy } from '@aws-cdk/aws-iam';
 import { Bucket } from '@aws-cdk/aws-s3';
 import { CfnCloudFrontOriginAccessIdentity } from '@aws-cdk/aws-cloudfront';
@@ -55,6 +55,7 @@ test('Has Content Write Access Policy', () => {
     expect((matching[0] as WriteAccessPolicy).bucket).toBe(origin.store);
 
 });
+
 
 
 /* -------------------------------------------------------------------------------------------------------------

@@ -1,6 +1,7 @@
 import cdk = require('@aws-cdk/core');
 
 import {StaticOrigin} from './static-origin';
+import { CfnOutput } from '@aws-cdk/core';
 
 
 function asName(s: string): string {
@@ -11,7 +12,12 @@ export class DataStack extends cdk.Stack {
     constructor(scope: cdk.Construct, props?: cdk.StackProps) {
         super(scope, "StaticData", props);
 
-        new StaticOrigin(this);
+        const origin = new StaticOrigin(this);
+
+        new CfnOutput(this, "WriteContentPolicyArn", {
+            value: origin.writeAccessPolicy.managedPolicyArn,
+            exportName: 'WriteContentPolicyArn',
+        });
 
       }
 }
