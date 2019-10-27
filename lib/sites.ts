@@ -1,14 +1,14 @@
 import cdk = require('@aws-cdk/core');
-import { DataStack, CertificateStack, DistributionStack } from  '../lib/stacks';
+import { DataStack, CertificateStack, DistributionStack } from  './stacks';
 
 
 
-export class StaticSites extends cdk.App {
+export class StaticSites extends cdk.Construct {
 
     private data: DataStack;
 
-    constructor() {
-        super();
+    constructor(scope: cdk.Construct, id: string) {
+        super(scope, id);
         this.data = new DataStack(this);
       }
 
