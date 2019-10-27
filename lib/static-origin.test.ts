@@ -1,8 +1,9 @@
-import {StaticOrigin, WriteAccessPolicy} from './static-origin';
+import {StaticOrigin, WriteAccessPolicy, AccessIdReadPolicy} from './static-origin';
 import { expect as expectCDK, matchTemplate, MatchStyle, haveResource, SynthUtils } from '@aws-cdk/assert';
 import { Stack, Resource } from '@aws-cdk/core';
 import { ManagedPolicy } from '@aws-cdk/aws-iam';
 import { Bucket } from '@aws-cdk/aws-s3';
+import { CfnCloudFrontOriginAccessIdentity } from '@aws-cdk/aws-cloudfront';
 
 test('Has Content Bucket', () => {
 
@@ -20,6 +21,24 @@ test('Has Origin Access Id', () => {
     new StaticOrigin(stack);
 
     expectCDK(stack).to(haveResource('AWS::CloudFront::CloudFrontOriginAccessIdentity'));
+});
+
+test('Has Origin Access Read Bucket Policy', () => {
+
+    // when
+    const origin = new StaticOrigin(new Stack());
+
+    // then
+    // a. we find a single AcccessIdReadPolicy
+    const matching = origin.node.children.filter(c => c instanceof AccessIdReadPolicy);
+    expect(matching.length).toBe(1);
+
+    // b. policy is attached to content bucket
+    expect((matching[0] as AccessIdReadPolicy).bucket).toBe(origin.store);
+
+    // c. policy is attched to origin access id
+    expect((matching[0] as AccessIdReadPolicy).accessId).toBe(origin.accessId);
+
 });
 
 test('Has Content Write Access Policy', () => {
@@ -53,6 +72,20 @@ test ('Snapshot: Write Access Policy', () => {
     const bucket = new Bucket(stack, "test");
 
     const policy = new WriteAccessPolicy(stack, bucket);
+
+    expect(SynthUtils.toCloudFormation(stack)).toMatchSnapshot();
+
+});
+
+test ('Snapshot: Access Id Read Access Policy', () => {
+
+    const stack = new Stack();
+    const bucket = new Bucket(stack, "test");
+    const id = new CfnCloudFrontOriginAccessIdentity(stack, "testid", {
+        cloudFrontOriginAccessIdentityConfig: {comment: "comment"}
+    });
+
+    const policy = new AccessIdReadPolicy(stack, bucket, id);
 
     expect(SynthUtils.toCloudFormation(stack)).toMatchSnapshot();
 
