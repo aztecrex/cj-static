@@ -1,4 +1,14 @@
-# Useful commands
+# Static File Service with Multiple Domains and Shared Content Store
+
+At CJ, we want to replace our Apache-based file sharing with something in the cloud. Using
+this opportunity to get acquanted with the new AWS CDK and figuring out how to do
+TDD and Top-down with it.
+
+## Install the CDK
+
+Read about it and install it: https://aws.amazon.com/cdk/ .
+
+## Useful commands
 
  * `npm run build`   compile typescript to js
  * `npm run watch`   watch for changes and compile
