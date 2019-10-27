@@ -1,7 +1,6 @@
 import {StaticOrigin, WriteAccessPolicy, AccessIdReadPolicy} from './static-origin';
-import { expect as expectCDK, matchTemplate, MatchStyle, haveResource, SynthUtils } from '@aws-cdk/assert';
-import { Stack, Resource, CfnOutput } from '@aws-cdk/core';
-import { ManagedPolicy } from '@aws-cdk/aws-iam';
+import { expect as expectCDK, haveResource, SynthUtils } from '@aws-cdk/assert';
+import { Stack } from '@aws-cdk/core';
 import { Bucket } from '@aws-cdk/aws-s3';
 import { CfnCloudFrontOriginAccessIdentity } from '@aws-cdk/aws-cloudfront';
 

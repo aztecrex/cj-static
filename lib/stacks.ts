@@ -2,6 +2,7 @@ import cdk = require('@aws-cdk/core');
 
 import {StaticOrigin} from './static-origin';
 import { CfnOutput } from '@aws-cdk/core';
+import { DnsValidatedCertificate, Certificate, ValidationMethod } from '@aws-cdk/aws-certificatemanager';
 
 
 function asName(s: string): string {
@@ -25,7 +26,10 @@ export class DataStack extends cdk.Stack {
 export class CertificateStack extends cdk.Stack {
     constructor(scope: cdk.Construct, domain: string, props?: cdk.StackProps) {
         super(scope, "Certificate-" + asName(domain), props);
-
+        new Certificate(this, "Certificate", {
+            domainName: domain,
+            validationMethod:  ValidationMethod.DNS,
+        });
       }
 }
 

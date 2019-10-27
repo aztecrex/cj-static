@@ -1,7 +1,8 @@
 import { StaticOrigin } from "./static-origin";
-import { Stack, CfnOutput, App } from "@aws-cdk/core";
-import { DataStack } from "./stacks";
-import { SynthUtils } from "@aws-cdk/assert";
+import { CfnOutput, App } from "@aws-cdk/core";
+import { DnsValidatedCertificate, ValidationMethod } from '@aws-cdk/aws-certificatemanager';
+import { DataStack, CertificateStack } from "./stacks";
+import { expect as expectCDK, haveResource, SynthUtils } from '@aws-cdk/assert';
 
 test('Data Stack Has Content Write Access Policy Arn Output', () => {
 
@@ -17,3 +18,17 @@ test('Data Stack Has Content Write Access Policy Arn Output', () => {
 
 });
 
+test('Certificate Stack Has Certificate', () => {
+
+
+    const domain = "foo.cj.dev";
+    const stack = new CertificateStack(new App, domain);
+
+    // then
+    expectCDK(stack).to(haveResource('AWS::CertificateManager::Certificate', {
+            DomainName: domain,
+            ValidationMethod:  ValidationMethod.DNS,
+        }));
+
+
+});
