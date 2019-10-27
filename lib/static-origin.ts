@@ -38,7 +38,7 @@ class AccessIdBucketReadAnyStatement extends PolicyStatement {
         this.effect = Effect.ALLOW;
         this.addActions('s3:GetObject');
         this.addResources(bucket.arnForObjects('*'));
-        this.addCanonicalUserPrincipal(accessId.ref);
+        this.addCanonicalUserPrincipal(accessId.attrS3CanonicalUserId);
     }
 }
 

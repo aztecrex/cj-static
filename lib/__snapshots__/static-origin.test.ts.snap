@@ -20,7 +20,10 @@ Object {
               "Effect": "Allow",
               "Principal": Object {
                 "CanonicalUser": Object {
-                  "Ref": "testid",
+                  "Fn::GetAtt": Array [
+                    "testid",
+                    "S3CanonicalUserId",
+                  ],
                 },
               },
               "Resource": Object {
