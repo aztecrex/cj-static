@@ -1,7 +1,7 @@
 # Static File Service with Multiple Domains and Shared Content Store
 
 At CJ, we want to replace our Apache-based file sharing with something in the cloud. Using
-this opportunity to get acquanted with the new AWS CDK and figuring out how to do
+this opportunity to get acquanted with the new AWS CDK and to figure out how to do
 TDD and Top-down with it.
 
 ## Install the CDK
