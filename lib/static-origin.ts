@@ -4,9 +4,9 @@ import { CfnCloudFrontOriginAccessIdentity } from '@aws-cdk/aws-cloudfront';
 import { ManagedPolicy, PolicyStatement, Effect } from '@aws-cdk/aws-iam';
 export interface IStaticOrigin {
 
-    store: Bucket,
-    accessId: CfnCloudFrontOriginAccessIdentity,
-    writeAccessPolicy: ManagedPolicy,
+    readonly store: Bucket,
+    readonly accessId: CfnCloudFrontOriginAccessIdentity,
+    readonly writeAccessPolicy: ManagedPolicy,
 
 }
 

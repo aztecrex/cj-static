@@ -1,8 +1,9 @@
 import { StaticOrigin } from "./static-origin";
-import { CfnOutput, App } from "@aws-cdk/core";
+import { CfnOutput, App, Stack } from "@aws-cdk/core";
 import { DnsValidatedCertificate, ValidationMethod } from '@aws-cdk/aws-certificatemanager';
-import { DataStack, CertificateStack } from "./stacks";
-import { expect as expectCDK, haveResource, SynthUtils } from '@aws-cdk/assert';
+import { DataStack, CertificateStack, DistributionStack } from "./stacks";
+import { expect as expectCDK, haveResource, haveResourceLike, SynthUtils } from '@aws-cdk/assert';
+import { Bucket } from "@aws-cdk/aws-s3";
 
 test('Data Stack Has Content Write Access Policy Arn Output', () => {
 
@@ -58,5 +59,25 @@ test('Certificate Stack Has Certificate Arn Output', () => {
     const tpl = SynthUtils.toCloudFormation(stack);
     console.log(tpl.Outputs);
     expect(tpl.Outputs[squish(nodeId)]).toMatchSnapshot();
+
+});
+
+test('Distribution stack has distribution', () => {
+    // given
+    const app = new App;
+    const bstack = new Stack(app, "data", {});
+    const origin = new Bucket(bstack, "o");
+
+    // when
+    const stack = new DistributionStack(app,  "bar.foo.com", origin);
+
+    // then
+    expectCDK(stack).to(haveResourceLike('AWS::CloudFront::Distribution', {
+        DistributionConfig: {
+            Origins: [{
+                OriginPath: "/bar.foo.com/*",
+            },]
+        },
+    }));
 
 });
