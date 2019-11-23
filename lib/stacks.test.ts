@@ -57,7 +57,6 @@ test('Certificate Stack Has Certificate Arn Output', () => {
 
     // snapshot the output configuration
     const tpl = SynthUtils.toCloudFormation(stack);
-    console.log(tpl.Outputs);
     expect(tpl.Outputs[squish(nodeId)]).toMatchSnapshot();
 
 });
@@ -79,5 +78,11 @@ test('Distribution stack has distribution', () => {
             },]
         },
     }));
+
+    // snapshot because values depend on CDK implementation
+    const tpl = SynthUtils.toCloudFormation(stack);
+    const ress = tpl.Resources;
+    const res = Object.keys(ress).find(k => k.startsWith("CDN"));
+    expect(res).toMatchSnapshot();
 
 });
