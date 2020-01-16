@@ -1,4 +1,5 @@
 import * as cdk  from '@aws-cdk/core';
+import * as waf from '@aws-cdk/aws-waf';
 
 import { DataStack, CertificateStack, DistributionStack } from  './stacks';
 
@@ -11,8 +12,6 @@ export class StaticSites extends cdk.Construct {
         this.data = new DataStack(this);
       }
 
-    private firewall =
-
     addDistribution(domain: string): StaticSites {
         const cert = new CertificateStack(this, domain);
         const dist = new DistributionStack(this, domain, this.data.origin.store, cert.certificate, this.data.origin.accessId);
@@ -22,3 +21,4 @@ export class StaticSites extends cdk.Construct {
     }
 
 }
+
