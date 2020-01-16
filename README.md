@@ -25,6 +25,8 @@ Example upload *cats.jpg* to files.cj.dev: `aws s3 cp cats.jpg s3://staticsitess
 To do:
 - attach WAF to prevent access from outside our network
 - generate write roles and provide a way for some of them to be assumed by developer role
+- take out the cj-specific bits, turn the core of this into a library, and publish on npjms.org
+
 
 ## Future Feature Ideas
 
