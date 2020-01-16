@@ -4,6 +4,13 @@ At CJ, we want to replace our Apache-based file sharing with something in the cl
 this opportunity to get acquanted with the new AWS CDK and to figure out how to do
 TDD and Top-down with it.
 
+## Requirements
+
+- Only accesible from inside corporate network
+- Single content store for all sites (for audits, backup, etc)
+- Easy to add content
+- Easy to add sites
+
 ## Architecture
 
 This project uses a single S3 bucket to hold content. Each static site we need will get its
@@ -23,7 +30,7 @@ Generally working and has a [first site](https://files.cj.dev).
 Example upload *cats.jpg* to files.cj.dev: `aws s3 cp cats.jpg s3://staticsitesstaticdata92393d-origincontentf0b6a01b-55v1e4nmnftb/files.cj.dev/cats.jpg`
 
 To do:
-- attach WAF to prevent access from outside our network
+- ~~attach WAF to prevent access from outside our network~~
 - generate write roles and provide a way for some of them to be assumed by developer role
 - take out the cj-specific bits, turn the core of this into a library, and publish on npjms.org
 
