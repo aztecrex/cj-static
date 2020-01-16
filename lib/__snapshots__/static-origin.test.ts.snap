@@ -21,7 +21,7 @@ Object {
               "Principal": Object {
                 "CanonicalUser": Object {
                   "Fn::GetAtt": Array [
-                    "testid",
+                    "testidCD9C1A02",
                     "S3CanonicalUserId",
                   ],
                 },
@@ -47,10 +47,10 @@ Object {
       },
       "Type": "AWS::S3::BucketPolicy",
     },
-    "testid": Object {
+    "testidCD9C1A02": Object {
       "Properties": Object {
         "CloudFrontOriginAccessIdentityConfig": Object {
-          "Comment": "comment",
+          "Comment": "Allows CloudFront to reach the bucket",
         },
       },
       "Type": "AWS::CloudFront::CloudFrontOriginAccessIdentity",

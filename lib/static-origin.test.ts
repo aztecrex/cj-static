@@ -2,7 +2,7 @@ import {StaticOrigin, WriteAccessPolicy, AccessIdReadPolicy} from './static-orig
 import { expect as expectCDK, haveResource, SynthUtils } from '@aws-cdk/assert';
 import { Stack } from '@aws-cdk/core';
 import { Bucket } from '@aws-cdk/aws-s3';
-import { CfnCloudFrontOriginAccessIdentity } from '@aws-cdk/aws-cloudfront';
+import * as cloudfront from '@aws-cdk/aws-cloudfront';
 
 test('Has Content Bucket', () => {
 
@@ -81,9 +81,7 @@ test ('Snapshot: Access Id Read Access Policy', () => {
 
     const stack = new Stack();
     const bucket = new Bucket(stack, "test");
-    const id = new CfnCloudFrontOriginAccessIdentity(stack, "testid", {
-        cloudFrontOriginAccessIdentityConfig: {comment: "comment"}
-    });
+    const id = new cloudfront.OriginAccessIdentity(stack, "testid");
 
     const policy = new AccessIdReadPolicy(stack, bucket, id);
 

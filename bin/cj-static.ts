@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 import 'source-map-support/register';
 
-import { StaticSites } from '../lib/sites';
+import * as cdk  from '@aws-cdk/core';
 
-import cdk = require('@aws-cdk/core');
+import { StaticSites } from '../lib/sites';
 
 const app = new cdk.App();
 const sites = new StaticSites(app, "StaticSites");

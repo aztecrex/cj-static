@@ -1,30 +1,28 @@
-import { Construct } from '@aws-cdk/core';
-import { Bucket, BucketPolicy } from '@aws-cdk/aws-s3';
-import { CfnCloudFrontOriginAccessIdentity } from '@aws-cdk/aws-cloudfront';
+import * as cdk from '@aws-cdk/core';
+import * as s3 from '@aws-cdk/aws-s3';
+import * as cloudfront from '@aws-cdk/aws-cloudfront';
 import { ManagedPolicy, PolicyStatement, Effect } from '@aws-cdk/aws-iam';
 export interface IStaticOrigin {
 
-    readonly store: Bucket,
-    readonly accessId: CfnCloudFrontOriginAccessIdentity,
+    readonly store: s3.Bucket,
+    readonly accessId: cloudfront.OriginAccessIdentity,
     readonly writeAccessPolicy: ManagedPolicy,
 
 }
 
 
-export class StaticOrigin extends Construct implements IStaticOrigin {
+export class StaticOrigin extends cdk.Construct implements IStaticOrigin {
     writeAccessPolicy: ManagedPolicy;
-    store: Bucket;
-    accessId: CfnCloudFrontOriginAccessIdentity;
+    store: s3.Bucket;
+    accessId: cloudfront.OriginAccessIdentity;
 
-    constructor(scope: Construct) {
+    constructor(scope: cdk.Construct) {
         super(scope, "Origin");
 
-        this.store = new Bucket(this, 'Content');
-        this.accessId = new CfnCloudFrontOriginAccessIdentity(this, 'WebId', {
-            cloudFrontOriginAccessIdentityConfig: {
-                comment: "Web Identity for Static Site"
-            }
-        });
+        this.store = new s3.Bucket(this, 'Content');
+
+        this.accessId = new cloudfront.OriginAccessIdentity(this, 'access-id');
+
         this.writeAccessPolicy = new WriteAccessPolicy(this, this.store);
         new AccessIdReadPolicy(this, this.store, this.accessId);
 
@@ -33,17 +31,17 @@ export class StaticOrigin extends Construct implements IStaticOrigin {
 
 
 class AccessIdBucketReadAnyStatement extends PolicyStatement {
-    constructor(bucket: Bucket, accessId: CfnCloudFrontOriginAccessIdentity) {
+    constructor(bucket: s3.Bucket, accessId: cloudfront.OriginAccessIdentity) {
         super();
         this.effect = Effect.ALLOW;
         this.addActions('s3:GetObject');
         this.addResources(bucket.arnForObjects('*'));
-        this.addCanonicalUserPrincipal(accessId.attrS3CanonicalUserId);
+        this.addCanonicalUserPrincipal(accessId.cloudFrontOriginAccessIdentityS3CanonicalUserId);
     }
 }
 
 class BucketWriteAnyStatement extends PolicyStatement {
-    constructor(bucket: Bucket) {
+    constructor(bucket: s3.Bucket) {
         super();
         this.effect = Effect.ALLOW;
         this.addActions(
@@ -59,11 +57,11 @@ class BucketWriteAnyStatement extends PolicyStatement {
 }
 
 
-export class AccessIdReadPolicy extends BucketPolicy {
-    bucket: Bucket;
-    accessId: CfnCloudFrontOriginAccessIdentity;
+export class AccessIdReadPolicy extends s3.BucketPolicy {
+    bucket: s3.Bucket;
+    accessId: cloudfront.OriginAccessIdentity;
 
-    constructor(scope: Construct, bucket: Bucket, accessId: CfnCloudFrontOriginAccessIdentity) {
+    constructor(scope: cdk.Construct, bucket: s3.Bucket, accessId: cloudfront.OriginAccessIdentity) {
         super(scope, bucket.node.id + "AccessIdReadAccess", {
             bucket: bucket
         });
@@ -75,9 +73,9 @@ export class AccessIdReadPolicy extends BucketPolicy {
 
 export class WriteAccessPolicy extends ManagedPolicy {
 
-    bucket: Bucket;
+    bucket: s3.Bucket;
 
-    constructor(scope: Construct, bucket: Bucket) {
+    constructor(scope: cdk.Construct, bucket: s3.Bucket) {
         super(scope, bucket.node.id + "WriteAccess", {
             statements: [new BucketWriteAnyStatement(bucket)]
         });

@@ -1,25 +1,34 @@
-import cdk = require('@aws-cdk/core');
+import * as cdk  from '@aws-cdk/core';
+import * as acm from '@aws-cdk/aws-certificatemanager';
+import * as cloudfront from '@aws-cdk/aws-cloudfront';
+import * as s3 from '@aws-cdk/aws-s3';
 
 import {StaticOrigin} from './static-origin';
-import { CfnOutput } from '@aws-cdk/core';
-import { DnsValidatedCertificate, Certificate, ValidationMethod } from '@aws-cdk/aws-certificatemanager';
-import { CfnDistribution, CloudFrontWebDistribution, CloudFrontAllowedMethods } from '@aws-cdk/aws-cloudfront';
-import { IBucket } from '@aws-cdk/aws-s3';
 
 
 function asName(s: string): string {
     return s.replace(/[^A-Za-z0-9-]/g, '-');
 }
 
-export class DataStack extends cdk.Stack {
+
+export class EasternStack extends cdk.Stack {
+
+    private static STACK_ENV = {region: 'us-east-1'};
+
+    constructor(scope: cdk.Construct, id: string,  props?: cdk.StackProps) {
+        super(scope, id, {...props, env: EasternStack.STACK_ENV});
+    }
+}
+
+export class DataStack extends EasternStack {
     readonly origin: StaticOrigin;
 
-    constructor(scope: cdk.Construct, props?: cdk.StackProps) {
-        super(scope, "StaticData", props);
+    constructor(scope: cdk.Construct) {
+        super(scope, "StaticData");
 
         this.origin = new StaticOrigin(this);
 
-        new CfnOutput(this, "WriteContentPolicyArn", {
+        new cdk.CfnOutput(this, "WriteContentPolicyArn", {
             value: this.origin.writeAccessPolicy.managedPolicyArn,
             exportName: 'WriteContentPolicyArn',
         });
@@ -27,53 +36,49 @@ export class DataStack extends cdk.Stack {
       }
 }
 
-export class CertificateStack extends cdk.Stack {
-    constructor(scope: cdk.Construct, domain: string, props?: cdk.StackProps) {
-        super(scope, "Certificate-" + asName(domain), {...props, env: {region: 'us-east-1'}});
-        const cert = new Certificate(this, "Certificate", {
+export class CertificateStack extends EasternStack {
+
+    public readonly certificate: acm.Certificate;
+
+    constructor(scope: cdk.Construct, domain: string) {
+        super(scope, "Certificate-" + asName(domain));
+        this.certificate = new acm.Certificate(this, "Certificate", {
             domainName: domain,
-            validationMethod:  ValidationMethod.DNS,
+            validationMethod:  acm.ValidationMethod.DNS,
         });
 
-        new CfnOutput(this, "Certificate-" + asName(domain) + "-Arn", {
-            value: cert.certificateArn,
+        new cdk.CfnOutput(this, "Certificate-" + asName(domain) + "-Arn", {
+            value: this.certificate.certificateArn,
         });
       }
 }
 
 
-export class DistributionStack extends cdk.Stack {
-    constructor(scope: cdk.Construct, domain: string, origin: IBucket, props?: cdk.StackProps) {
-        super(scope, "Distribution-" + asName(domain), props);
+export class DistributionStack extends EasternStack {
+    constructor(scope: cdk.Construct, domain: string, origin: s3.IBucket, certificate: acm.Certificate, originAccessId: cloudfront.OriginAccessIdentity) {
+        super(scope, "Distribution-" + asName(domain));
 
-
-        const cdn = new CloudFrontWebDistribution(this, "CDN", {
+        const cdn = new cloudfront.CloudFrontWebDistribution(this, "CDN", {
+            aliasConfiguration: {
+                acmCertRef: certificate.certificateArn,
+                names: [domain],
+            },
             originConfigs: [{
                 s3OriginSource: {
                     s3BucketSource: origin,
+                    originAccessIdentity: originAccessId,
                 },
-                originPath: "/" + domain + "/*",
+                originPath: "/" + domain,
                 behaviors: [{
                     isDefaultBehavior: true,
+                    maxTtl: cdk.Duration.seconds(120),
+                    minTtl: cdk.Duration.seconds(15),
+                    defaultTtl: cdk.Duration.seconds(120),
+
                 }],
-    /**
-     * The relative path to the origin root to use for sources.
-     *
-     * @default /
-     */
-    // readonly originPath?: string;
-    /**
-     * Any additional headers to pass to the origin
-     *
-     * @default - No additional headers are passed.
-     */
-    // readonly originHeaders?: {
-    //     [key: string]: string;
-    // };
 
             }],
         });
-
 
       }
 }

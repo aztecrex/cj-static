@@ -6,7 +6,7 @@
   },
   "scripts": {
     "build": "tsc && cdk synth",
-    "deploy": "tsc && cdk deploy '*'",
+    "deploy": "tsc && cdk deploy --require-approval never '*'",
     "diff": "tsc && cdk diff",
     "watch": "jest --watch",
     "test": "jest",

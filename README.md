@@ -16,23 +16,21 @@ The Construct supports a simple way to add a domain: the method `addDistrubition
 all the work necessary to make a new website. Each domain results in an independent stack
 so sites can be brought down without risking other site configs.
 
-
 ## Status
 
-So far, the content store, origin access id, read and write permissions, and the certificate
-requests are working. Next up is the CloudFront provisioning. In our environment, vanity
-domains are managed in a separate administration boundary so initiall we'll just output the
-necessary information to configure those without actually provisioning anything in Route 53.
+Generally working and has a [first site](https://files.cj.dev).
 
-Then I'll start on the WAF.
+Example upload *cats.jpg* to files.cj.dev: `aws s3 cp cats.jpg s3://staticsitesstaticdata92393d-origincontentf0b6a01b-55v1e4nmnftb/files.cj.dev/cats.jpg`
+
+To do:
+- attach WAF to prevent access from outside our network
+- generate write roles and provide a way for some of them to be assumed by developer role
 
 ## Future Feature Ideas
 
-- backup content store to archival storage
-- partition write access by site
-- expose DNS administration (a separate project) for cert validation and create a custom
-  resource for cert validation (alternatively, use the one in CDK but I don't think it
-  is compatible with our particular administrative setup).
+- command line UI for upload, delete, list - using roles
+- once command line tool can set TTL, remove max TTL in distributions
+- backup content store to archival storage in another region
 
 ## Install the CDK
 
@@ -40,11 +38,11 @@ Read about it and install it: https://aws.amazon.com/cdk/ .
 
 ## Useful commands
 
- * `npm run build`   compile typescript to js
+ * `npm run build`   compile and synthesize stacks
+ * `npm run deploy`  compile and deploy to us-east-1 in current account
+ * `npm run diff`    compile and display status
  * `npm run watch`   watch for changes and compile
  * `npm run test`    perform the jest unit tests
- * `cdk deploy`      deploy this stack to your default AWS account/region
  * `cdk diff`        compare deployed stack with current state
- * `cdk synth`       emits the synthesized CloudFormation template
 
 

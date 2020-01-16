@@ -18,5 +18,3 @@ Object {
   },
 }
 `;
-
-exports[`Distribution stack has distribution 1`] = `"CDNCFDistribution5C555532"`;

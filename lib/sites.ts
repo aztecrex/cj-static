@@ -1,7 +1,6 @@
-import cdk = require('@aws-cdk/core');
+import * as cdk  from '@aws-cdk/core';
+
 import { DataStack, CertificateStack, DistributionStack } from  './stacks';
-
-
 
 export class StaticSites extends cdk.Construct {
 
@@ -14,7 +13,7 @@ export class StaticSites extends cdk.Construct {
 
     addDistribution(domain: string): StaticSites {
         const cert = new CertificateStack(this, domain);
-        const dist = new DistributionStack(this, domain, this.data.origin.store);
+        const dist = new DistributionStack(this, domain, this.data.origin.store, cert.certificate, this.data.origin.accessId);
         dist.addDependency(this.data);
         dist.addDependency(cert);
         return this;
