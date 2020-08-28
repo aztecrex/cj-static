@@ -9,3 +9,5 @@ const app = new cdk.App();
 const sites = new StaticSites(app, "StaticSites");
 sites.addDistribution("files.cj.dev");
 sites.addDistribution("commitments.cj.dev");
+sites.addDistribution("bugzilla.cj.dev");
+sites.addDistribution("twiki.cj.dev");
