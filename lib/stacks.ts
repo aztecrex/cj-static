@@ -85,6 +85,10 @@ export class DistributionStack extends EasternStack {
             webACLId: firewall.acl.ref // don't attach while debugging or we'll have a long wait
         });
 
+        new cdk.CfnOutput(this, 'DomainName', {
+            value: cdn.domainName
+        });
+
       }
 }
 
